@@ -48,11 +48,22 @@
                 <!-- Admin Action -->
                 <div class="flex items-center space-x-3">
                     @auth
-                        <a href="{{ route('admin.dashboard') }}" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2 transition-all">
-                            <i class="fa-solid fa-gauge-high text-orange-400"></i>
-                            <span>Dashboard Admin</span>
-                        </a>
+                        @if(auth()->user()->role === 'teacher')
+                            <a href="{{ route('teacher.schedules.index') }}" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2 transition-all">
+                                <i class="fa-solid fa-chalkboard-user text-indigo-400"></i>
+                                <span>Dashboard Guru</span>
+                            </a>
+                        @else
+                            <a href="{{ route('admin.dashboard') }}" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2 transition-all">
+                                <i class="fa-solid fa-gauge-high text-orange-400"></i>
+                                <span>Dashboard Admin</span>
+                            </a>
+                        @endif
                     @else
+                        <a href="{{ route('teacher.login') }}" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all flex items-center space-x-1">
+                            <i class="fa-solid fa-chalkboard-user mr-1.5"></i>
+                            <span>Guru Login</span>
+                        </a>
                         <a href="{{ route('login') }}" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 px-3.5 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all">
                             <i class="fa-solid fa-lock mr-1.5"></i> Petugas Login
                         </a>

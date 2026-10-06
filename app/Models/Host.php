@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Host extends Model
 {
@@ -13,6 +14,7 @@ class Host extends Model
 
     protected $fillable = [
         'department_id',
+        'user_id',
         'nip_nik',
         'name',
         'position',
@@ -29,6 +31,16 @@ class Host extends Model
     public function guestVisits(): HasMany
     {
         return $this->hasMany(GuestVisit::class);
+    }
+
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class);
+    }
+
+    public function teacherSchedules(): HasMany
+    {
+        return $this->hasMany(TeacherSchedule::class);
     }
 
     public function getStatusBadgeAttribute(): string
