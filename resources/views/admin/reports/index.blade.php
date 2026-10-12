@@ -9,16 +9,38 @@
 
     <!-- Filter Card -->
     <div class="bg-white rounded-2xl p-6 shadow-xs border border-slate-200">
-        <form action="{{ route('admin.reports.index') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
-            
+    <form action="{{ route('admin.reports.index') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 items-end">      
+        
+        <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Periode Laporan
+            </label>
+
+            <select
+                id="period"
+                name="period"
+                class="w-full p-2 bg-slate-50 border border-slate-300 rounded-xl text-xs"
+            >
+                <option value="weekly" {{ $period === 'weekly' ? 'selected' : '' }}>
+                    Mingguan
+                </option>
+                <option value="monthly" {{ $period === 'monthly' ? 'selected' : '' }}>
+                    Bulanan
+                </option>
+                <option value="custom" {{ $period === 'custom' ? 'selected' : '' }}>
+                    Rentang Tanggal
+                </option>
+            </select>
+        </div>
+
             <div>
                 <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Tanggal Mulai</label>
-                <input type="date" name="start_date" value="{{ $startDate }}" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-xl text-xs">
+                <input type="date" id="start_date" name="start_date" value="{{ $startDate }}" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-xl text-xs">
             </div>
 
             <div>
                 <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Tanggal Akhir</label>
-                <input type="date" name="end_date" value="{{ $endDate }}" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-xl text-xs">
+                <input type="date" id="end_date" name="end_date" value="{{ $endDate }}" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-xl text-xs">
             </div>
 
             <div>
@@ -101,6 +123,7 @@
                         <th class="py-3 px-4">Nama Tamu & Instansi</th>
                         <th class="py-3 px-4">Keperluan</th>
                         <th class="py-3 px-4">Tujuan (Host/Dept)</th>
+                        <th class="py-3 px-4">Diterima Oleh</th>
                         <th class="py-3 px-4 text-center">Status</th>
                         <th class="py-3 px-4 text-center">Rating</th>
                     </tr>
@@ -115,9 +138,13 @@
                                 <div class="text-[11px] text-slate-400">{{ $visit->institution }}</div>
                             </td>
                             <td class="py-3 px-4 font-medium">{{ $visit->purpose }}</td>
-                            <td class="py-3 px-4">
-                                {{ $visit->host->name ?? ($visit->department->name ?? '-') }}
-                            </td>
+                          <td class="py-3 px-4">
+                                    {{ $visit->host->name ?? ($visit->department->name ?? '-') }}
+                                </td>
+
+                                <td class="py-3 px-4">
+                                    {{ $visit->receivedByHost->name ?? '-' }}
+                                </td>
                             <td class="py-3 px-4 text-center">
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border {{ $visit->status_badge }}">
                                     {{ $visit->status_label }}
@@ -133,8 +160,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="py-12 text-center text-slate-400">Tidak ada data rekapitulasi untuk filter ini.</td>
-                        </tr>
+                            <td colspan="8" class="py-12 text-center text-slate-400">Tidak ada data rekapitulasi untuk filter ini. </td>                        </tr>
                     @endforelse
                 </tbody>
             </table>
@@ -142,4 +168,27 @@
     </div>
 
 </div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const period = document.getElementById('period');
+        const startDate = document.getElementById('start_date');
+        const endDate = document.getElementById('end_date');
+
+        function updateDateInputs() {
+            const isCustom = period.value === 'custom';
+
+            startDate.disabled = !isCustom;
+            endDate.disabled = !isCustom;
+
+            startDate.classList.toggle('opacity-50', !isCustom);
+            endDate.classList.toggle('opacity-50', !isCustom);
+        }
+
+        period.addEventListener('change', updateDateInputs);
+
+        updateDateInputs();
+    });
+</script>
 @endsection

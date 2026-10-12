@@ -204,13 +204,13 @@
                                     @endif
 
                                     @if($visit->status === 'approved')
-                                        <form action="{{ route('admin.visits.update_status', $visit->id) }}" method="POST" class="inline">
-                                            @csrf @method('PATCH')
-                                            <input type="hidden" name="status" value="checked_in">
-                                            <button type="submit" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-colors">
-                                                Check-In
-                                            </button>
-                                        </form>
+                                        <button
+                                            type="button"
+                                            onclick="openCheckInModal({{ $visit->id }}, '{{ $visit->ticket_code }}')"
+                                            class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-colors"
+                                        >
+                                            Check-In
+                                        </button>
                                     @endif
 
                                     @if($visit->status === 'checked_in')
@@ -277,6 +277,69 @@
     </div>
 </div>
 
+
+<!-- Check-In Modal -->
+<div id="checkin-modal"
+    class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+        <h3 class="font-bold text-lg text-slate-900">
+            Konfirmasi Check-In
+        </h3>
+
+        <p class="text-xs text-slate-500" id="checkin-ticket-text"></p>
+
+        <form id="checkin-form" method="POST" class="space-y-4">
+            @csrf
+            @method('PATCH')
+
+            <input type="hidden" name="status" value="checked_in">
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-2">
+                    Guru/Staf yang Menerima Tamu
+                </label>
+
+                <select
+                    name="received_by_host_id"
+                    required
+                    class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-sm"
+                >
+                    <option value="">-- Pilih penerima tamu --</option>
+
+                    @foreach($hosts as $host)
+                        <option value="{{ $host->id }}">
+                            {{ $host->name }} - {{ $host->position }}
+                        </option>
+                    @endforeach
+                </select>
+
+                @error('received_by_host_id')
+                    <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+                <button
+                    type="button"
+                    onclick="closeCheckInModal()"
+                    class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold"
+                >
+                    Batal
+                </button>
+
+                <button
+                    type="submit"
+                    class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold"
+                >
+                    Simpan & Check-In
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+ 
+
 <!-- Visit Detail Modal -->
 <div id="detail-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
     <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
@@ -307,6 +370,21 @@
         form.action = '/admin/visits/' + id + '/status';
         document.getElementById('reject-modal').classList.remove('hidden');
     }
+
+    function openCheckInModal(id, ticketCode) {
+        document.getElementById('checkin-ticket-text').textContent =
+            'Tiket: ' + ticketCode;
+
+        document.getElementById('checkin-form').action =
+            '/admin/visits/' + id + '/status';
+
+        document.getElementById('checkin-modal').classList.remove('hidden');
+    }
+
+    function closeCheckInModal() {
+        document.getElementById('checkin-modal').classList.add('hidden');
+    }
+
 
     function closeRejectModal() {
         document.getElementById('reject-modal').classList.add('hidden');
