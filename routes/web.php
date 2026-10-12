@@ -5,7 +5,6 @@ use App\Http\Controllers\AdminDepartmentController;
 use App\Http\Controllers\AdminHostController;
 use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\GuestRegistrationController;
 use App\Http\Controllers\TeacherScheduleController;
 use App\Http\Controllers\TicketPassController;
@@ -21,10 +20,7 @@ Route::get('/api/departments/{department}/hosts', [GuestRegistrationController::
 Route::get('/tiket/{code}', [TicketPassController::class, 'show'])->name('ticket.show');
 Route::get('/cek-tiket', [TicketPassController::class, 'lookup'])->name('ticket.lookup');
 Route::post('/cek-tiket', [TicketPassController::class, 'search'])->name('ticket.search');
-
-// Check-out & Feedback
-Route::get('/check-out', [CheckoutController::class, 'index'])->name('guest.checkout');
-Route::post('/check-out', [CheckoutController::class, 'processCheckout'])->name('guest.checkout.process');
+Route::get('/tiket/{code}/checkout', [TicketPassController::class, 'checkout'])->name('guest.checkout');
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'loginForm'])->name('login');

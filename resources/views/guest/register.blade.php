@@ -60,22 +60,6 @@
                             @error('guest_name') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                         </div>
 
-                        <!-- Instansi / Asal -->
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                                Instansi / Asal Sekolah / Perusahaan <span class="text-rose-500">*</span>
-                            </label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                                    <i class="fa-solid fa-building"></i>
-                                </span>
-                                <input type="text" name="institution" value="{{ old('institution') }}" required
-                                    placeholder="Contoh: PT Telkom / Wali Murid / Pribadi"
-                                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all">
-                            </div>
-                            @error('institution') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
-                        </div>
-
                         <!-- No Telepon / WA -->
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
@@ -113,16 +97,7 @@
                             <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                                 Maksud / Keperluan Kunjungan <span class="text-rose-500">*</span>
                             </label>
-                            <select name="purpose" required class="w-full py-2.5 px-3.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all">
-                                <option value="" disabled selected>-- Pilih Keperluan --</option>
-                                <option value="Dinas / Kedinasan" {{ old('purpose') == 'Dinas / Kedinasan' ? 'selected' : '' }}>Dinas / Kedinasan</option>
-                                <option value="Wali Murid" {{ old('purpose') == 'Wali Murid' ? 'selected' : '' }}>Wali Murid / Konsultasi Siswa</option>
-                                <option value="Vendor / Kerjasama" {{ old('purpose') == 'Vendor / Kerjasama' ? 'selected' : '' }}>Vendor / Sales / MoU Kerjasama</option>
-                                <option value="Alumni" {{ old('purpose') == 'Alumni' ? 'selected' : '' }}>Alumni / Urusan Berkas Ijazah</option>
-                                <option value="Kunjungan Studi / Field Trip" {{ old('purpose') == 'Kunjungan Studi / Field Trip' ? 'selected' : '' }}>Kunjungan Studi / Field Trip</option>
-                                <option value="Undangan Acara" {{ old('purpose') == 'Undangan Acara' ? 'selected' : '' }}>Undangan Acara Sekolah</option>
-                                <option value="Lainnya" {{ old('purpose') == 'Lainnya' ? 'selected' : '' }}>Keperluan Lainnya</option>
-                            </select>
+                            <input type="text" name="purpose" required class="w-full py-2.5 px-3.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all" placeholder="Contoh: Dinas, kunjungan, dll.">
                             @error('purpose') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
@@ -151,14 +126,16 @@
                             <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                                 Guru / Staf yang Ingin Ditemui
                             </label>
-                            <select name="host_id" id="host_id" class="w-full py-2.5 px-3.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all">
-                                <option value="">-- Pilih Guru/Staf (Optional) --</option>
-                                @foreach($hosts as $host)
-                                    <option value="{{ $host->id }}" data-dept="{{ $host->department_id }}" {{ old('host_id') == $host->id ? 'selected' : '' }}>
-                                        {{ $host->name }} - {{ $host->position }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <i class="fa-solid fa-user-graduate"></i>
+                                </span>
+                                <input type="text" name="host_name" id="host_name_input" 
+                                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all"
+                                    placeholder="Ketik nama guru/staff..." 
+                                    autocomplete="off">
+                            </div>
+                            <input type="hidden" name="host_id" id="host_hidden">
                             @error('host_id') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                         </div>
 
@@ -202,56 +179,13 @@
                                 class="w-full py-2.5 px-3.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all">
                         </div>
 
-                        <!-- Catatan Additional -->
+<!-- Catatan Additional -->
                         <div class="sm:col-span-2">
                             <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                                 Catatan / Rincian Tambahan
                             </label>
                             <textarea name="notes" rows="3" placeholder="Tuliskan rincian lebih detail mengenai keperluan Anda..."
                                 class="w-full py-2.5 px-3.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all">{{ old('notes') }}</textarea>
-                        </div>
-                    </div>
-
-                    <!-- 3. Foto Tamu Section (Webcam or Upload) -->
-                    <div class="pt-6 border-t border-slate-100">
-                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                            Foto Identitas / Tampak Muka (Opsional)
-                        </label>
-                        
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <div class="flex flex-col sm:flex-row items-center gap-4">
-                                <!-- Webcam Preview Container -->
-                                <div class="w-48 h-36 bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center relative border border-slate-300 shrink-0">
-                                    <video id="webcam" autoplay playsinline class="w-full h-full object-cover hidden"></video>
-                                    <canvas id="canvas" class="w-full h-full object-cover hidden"></canvas>
-                                    <img id="photo-preview" class="w-full h-full object-cover hidden" />
-                                    <div id="webcam-placeholder" class="text-center p-3 text-slate-400">
-                                        <i class="fa-solid fa-camera text-2xl mb-1"></i>
-                                        <p class="text-[10px]">Kamera Mati</p>
-                                    </div>
-                                </div>
-
-                                <div class="flex-1 space-y-2 text-center sm:text-left">
-                                    <input type="hidden" name="captured_photo" id="captured_photo">
-                                    
-                                    <div class="flex flex-wrap gap-2 justify-center sm:justify-start">
-                                        <button type="button" id="start-webcam-btn" onclick="startWebcam()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-medium transition-colors inline-flex items-center">
-                                            <i class="fa-solid fa-video mr-1.5"></i> Buka Kamera
-                                        </button>
-                                        <button type="button" id="capture-btn" onclick="takeSnapshot()" class="px-3 py-1.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-xs font-medium transition-colors hidden inline-flex items-center">
-                                            <i class="fa-solid fa-camera-retro mr-1.5"></i> Ambil Foto
-                                        </button>
-                                        <button type="button" id="retake-btn" onclick="resetWebcam()" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-medium transition-colors hidden inline-flex items-center">
-                                            <i class="fa-solid fa-rotate-left mr-1.5"></i> Foto Ulang
-                                        </button>
-                                    </div>
-
-                                    <div class="text-[11px] text-slate-500">
-                                        Atau unggah file foto langsung dari galeri HP/Laptop Anda:
-                                    </div>
-                                    <input type="file" name="photo" accept="image/*" class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300">
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -341,92 +275,223 @@
 
 @push('scripts')
 <script>
-    // Department Filter Host Dropdown
     document.addEventListener('DOMContentLoaded', function () {
-        const deptSelect = document.getElementById('department_id');
-        const hostSelect = document.getElementById('host_id');
-        const allHostOptions = Array.from(hostSelect.options);
 
-        deptSelect.addEventListener('change', function () {
-            const selectedDeptId = this.value;
-            
-            // Clear current options except first
-            hostSelect.innerHTML = '<option value="">-- Pilih Guru/Staf (Optional) --</option>';
+        const hostInput = document.getElementById('host_name_input');
+        const hostHidden = document.getElementById('host_hidden');
 
-            allHostOptions.forEach(opt => {
-                if (opt.value && opt.dataset.dept === selectedDeptId) {
-                    hostSelect.appendChild(opt.cloneNode(true));
-                }
-            });
-        });
-    });
-
-    // Webcam Photo Handling
-    let videoStream = null;
-
-    function startWebcam() {
-        const video = document.getElementById('webcam');
-        const placeholder = document.getElementById('webcam-placeholder');
-        const startBtn = document.getElementById('start-webcam-btn');
-        const captureBtn = document.getElementById('capture-btn');
-
-        navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-            .then(function (stream) {
-                videoStream = stream;
-                video.srcObject = stream;
-                video.classList.remove('hidden');
-                placeholder.classList.add('hidden');
-                startBtn.classList.add('hidden');
-                captureBtn.classList.remove('hidden');
-            })
-            .catch(function (err) {
-                alert('Tidak dapat mengakses kamera browser. Pastikan izin kamera aktif.');
-                console.error(err);
-            });
-    }
-
-    function takeSnapshot() {
-        const video = document.getElementById('webcam');
-        const canvas = document.getElementById('canvas');
-        const preview = document.getElementById('photo-preview');
-        const capturedInput = document.getElementById('captured_photo');
-        const captureBtn = document.getElementById('capture-btn');
-        const retakeBtn = document.getElementById('retake-btn');
-
-        canvas.width = video.videoWidth || 320;
-        canvas.height = video.videoHeight || 240;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        const dataUrl = canvas.toDataURL('image/png');
-        capturedInput.value = dataUrl;
-        preview.src = dataUrl;
-
-        // Stop camera stream
-        if (videoStream) {
-            videoStream.getTracks().forEach(track => track.stop());
+        if (!hostInput || !hostHidden) {
+            return;
         }
 
-        video.classList.add('hidden');
-        preview.classList.remove('hidden');
-        captureBtn.classList.add('hidden');
-        retakeBtn.classList.remove('hidden');
-    }
+        // Get teachers from Laravel
+        const allHostOptions = @json($hosts->pluck('name', 'id'));
 
-    function resetWebcam() {
-        const video = document.getElementById('webcam');
-        const preview = document.getElementById('photo-preview');
-        const capturedInput = document.getElementById('captured_photo');
-        const retakeBtn = document.getElementById('retake-btn');
-        const startBtn = document.getElementById('start-webcam-btn');
+        // Create suggestion container
+        const suggestionsDiv = document.createElement('div');
 
-        capturedInput.value = '';
-        preview.src = '';
-        preview.classList.add('hidden');
-        retakeBtn.classList.add('hidden');
-        startBtn.classList.remove('hidden');
-        
-        startWebcam();
-    }
+        suggestionsDiv.id = 'host-suggestions';
+
+        suggestionsDiv.className = `
+            absolute
+            top-full
+            left-0
+            right-0
+            mt-1
+            bg-white
+            border
+            border-slate-200
+            rounded-xl
+            shadow-lg
+            overflow-hidden
+            z-50
+            hidden
+        `;
+
+        hostInput.parentElement.style.position = 'relative';
+        hostInput.parentElement.appendChild(suggestionsDiv);
+
+
+        // Show teacher suggestions
+        function showSuggestions(query) {
+
+            suggestionsDiv.innerHTML = '';
+
+            query = query.trim().toLowerCase();
+
+            // If input is empty, hide dropdown
+            if (query.length === 0) {
+                suggestionsDiv.classList.add('hidden');
+                hostHidden.value = '';
+                return;
+            }
+
+            let matched = false;
+
+            Object.entries(allHostOptions).forEach(function ([id, name]) {
+
+                if (name.toLowerCase().includes(query)) {
+
+                    matched = true;
+
+                    const item = document.createElement('button');
+
+                    item.type = 'button';
+
+                    item.className = `
+                        w-full
+                        text-left
+                        px-4
+                        py-3
+                        text-sm
+                        text-slate-700
+                        hover:bg-orange-50
+                        hover:text-orange-600
+                        border-b
+                        border-slate-100
+                        transition-colors
+                    `;
+
+                    item.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+
+                            <div>
+                                <div class="font-semibold">${name}</div>
+                                <div class="text-xs text-slate-400">
+                                    Pilih guru/staf ini
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    item.addEventListener('click', function () {
+
+                        // Put teacher name into visible input
+                        hostInput.value = name;
+
+                        // Put teacher ID into hidden input
+                        hostHidden.value = id;
+
+                        // Hide dropdown
+                        suggestionsDiv.classList.add('hidden');
+                    });
+
+                    suggestionsDiv.appendChild(item);
+                }
+            });
+
+
+            // Show "not found"
+            if (!matched) {
+
+                const noResult = document.createElement('div');
+
+                noResult.className = `
+                    px-4
+                    py-3
+                    text-sm
+                    text-slate-500
+                `;
+
+                noResult.innerHTML = `
+                    <i class="fa-solid fa-circle-exclamation mr-2"></i>
+                    Guru/staf tidak ditemukan.
+                `;
+
+                suggestionsDiv.appendChild(noResult);
+            }
+
+
+            // Show dropdown
+            suggestionsDiv.classList.remove('hidden');
+        }
+
+
+        // When user types
+        hostInput.addEventListener('input', function () {
+
+            // Clear selected teacher ID when typing again
+            hostHidden.value = '';
+
+            showSuggestions(this.value);
+        });
+
+
+        // Show all teachers when input is focused
+        hostInput.addEventListener('focus', function () {
+
+            if (this.value.trim() === '') {
+
+                suggestionsDiv.innerHTML = '';
+
+                Object.entries(allHostOptions).forEach(function ([id, name]) {
+
+                    const item = document.createElement('button');
+
+                    item.type = 'button';
+
+                    item.className = `
+                        w-full
+                        text-left
+                        px-4
+                        py-3
+                        text-sm
+                        text-slate-700
+                        hover:bg-orange-50
+                        hover:text-orange-600
+                        border-b
+                        border-slate-100
+                        transition-colors
+                    `;
+
+                    item.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+
+                            <div>
+                                <div class="font-semibold">${name}</div>
+                                <div class="text-xs text-slate-400">
+                                    Guru / Staff
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    item.addEventListener('click', function () {
+
+                        hostInput.value = name;
+                        hostHidden.value = id;
+
+                        suggestionsDiv.classList.add('hidden');
+                    });
+
+                    suggestionsDiv.appendChild(item);
+                });
+
+                suggestionsDiv.classList.remove('hidden');
+            }
+        });
+
+
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+
+            if (
+                !hostInput.contains(event.target) &&
+                !suggestionsDiv.contains(event.target)
+            ) {
+                suggestionsDiv.classList.add('hidden');
+            }
+        });
+
+
+        });
 </script>
 @endpush
+
+

@@ -40,9 +40,6 @@
                     <a href="{{ route('ticket.lookup') }}" class="px-4 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('ticket.lookup') ? 'bg-orange-600 text-white shadow' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                         <i class="fa-solid fa-ticket mr-1.5 text-xs"></i> Cek Tiket / Status
                     </a>
-                    <a href="{{ route('guest.checkout') }}" class="px-4 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('guest.checkout') ? 'bg-orange-600 text-white shadow' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                        <i class="fa-solid fa-right-from-bracket mr-1.5 text-xs"></i> Selesai / Check-Out
-                    </a>
                 </nav>
 
                 <!-- Admin Action -->
