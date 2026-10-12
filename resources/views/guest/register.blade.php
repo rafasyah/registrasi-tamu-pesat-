@@ -161,6 +161,61 @@
                             </select>
                             @error('host_id') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                         </div>
+        
+                        <!-- Konfirmasi Janji -->
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                                Apakah Sudah Membuat Janji?
+                                <span class="text-rose-500">*</span>
+                            </label>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <label class="flex items-start gap-3 p-4 border border-slate-300 rounded-xl bg-slate-50 cursor-pointer hover:border-orange-400 transition-colors">
+                                    <input
+                                        type="radio"
+                                        name="has_appointment"
+                                        value="1"
+                                        required
+                                        {{ old('has_appointment') === '1' ? 'checked' : '' }}
+                                        class="mt-1 accent-orange-600"
+                                    >
+
+                                    <div>
+                                        <span class="block text-sm font-semibold text-slate-800">
+                                            Sudah membuat janji
+                                        </span>
+                                        <span class="block text-xs text-slate-500 mt-1">
+                                            Sudah menghubungi guru atau staf yang dituju.
+                                        </span>
+                                    </div>
+                                </label>
+
+                                <label class="flex items-start gap-3 p-4 border border-slate-300 rounded-xl bg-slate-50 cursor-pointer hover:border-orange-400 transition-colors">
+                                    <input
+                                        type="radio"
+                                        name="has_appointment"
+                                        value="0"
+                                        required
+                                        {{ old('has_appointment') === '0' ? 'checked' : '' }}
+                                        class="mt-1 accent-orange-600"
+                                    >
+
+                                    <div>
+                                        <span class="block text-sm font-semibold text-slate-800">
+                                            Belum membuat janji
+                                        </span>
+                                        <span class="block text-xs text-slate-500 mt-1">
+                                            Belum menghubungi guru atau staf yang dituju.
+                                        </span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            @error('has_appointment')
+                                <p class="text-xs text-rose-500 mt-2">{{ $message }}</p>
+                            @enderror
+                        </div>
+
 
                         <!-- Tanggal Kunjungan -->
                         <div>
