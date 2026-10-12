@@ -20,7 +20,12 @@ class GuestRegistrationController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('guest.register', compact('departments', 'hosts'));
+        $recentVisits = GuestVisit::with(['department', 'host', 'receivedByHost'])
+            ->latest()
+            ->take(6)
+            ->get();
+
+        return view('guest.register', compact('departments', 'hosts', 'recentVisits'));
     }
 
     public function getHostsByDepartment(Department $department)
@@ -43,11 +48,7 @@ class GuestRegistrationController extends Controller
             'department_id' => 'required|exists:departments,id',
 
             'host_id' => 'nullable|exists:hosts,id',
-<<<<<<< HEAD
 
-=======
-            'has_appointment' => 'required|boolean',
->>>>>>> b900a7a7d71c3262b2eb224a8c52d2b7d19a8eb2
             'visit_date' => 'required|date',
             'scheduled_time' => 'required',
             'guest_count' => 'required|integer|min:1|max:100',
@@ -92,7 +93,7 @@ class GuestRegistrationController extends Controller
 
                 if ($imageData !== false) {
 
-                    $filename = 'guests/' . $ticketCode . '_' . time() . '.' . $type;
+                    $filename = 'guests/'.$ticketCode.'_'.time().'.'.$type;
 
                     Storage::disk('public')->put(
                         $filename,
@@ -134,11 +135,6 @@ class GuestRegistrationController extends Controller
             'department_id' => $validated['department_id'],
 
             'host_id' => $validated['host_id'] ?? null,
-<<<<<<< HEAD
-
-=======
-            'has_appointment' => $validated['has_appointment'],
->>>>>>> b900a7a7d71c3262b2eb224a8c52d2b7d19a8eb2
             'visit_date' => $validated['visit_date'],
 
             'scheduled_time' => $validated['scheduled_time'],

@@ -257,6 +257,76 @@
 
         <!-- Right: Info Sidebar -->
         <div class="lg:col-span-4 space-y-6">
+
+            <!-- Report / Live Status Tiket & Penerima Kunjungan -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-9 h-9 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-clipboard-list text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-sm leading-tight">Status Tiket & Penerima</h3>
+                            <p class="text-[11px] text-slate-500">Info terkini kunjungan di sekolah</p>
+                        </div>
+                    </div>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse mr-1"></span> Live
+                    </span>
+                </div>
+
+                @if(isset($recentVisits) && $recentVisits->count() > 0)
+                    <div class="divide-y divide-slate-100 space-y-3">
+                        @foreach($recentVisits as $visit)
+                            <div class="pt-3 first:pt-0">
+                                <div class="flex items-center justify-between gap-2 mb-1.5">
+                                    <span class="font-mono text-xs font-bold text-slate-900 tracking-tight flex items-center gap-1.5">
+                                        <i class="fa-solid fa-ticket text-orange-500 text-[11px]"></i>
+                                        {{ $visit->ticket_code }}
+                                    </span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold border {{ $visit->status_badge }}">
+                                        {{ $visit->status_label }}
+                                    </span>
+                                </div>
+
+                                <div class="text-xs text-slate-700 font-medium truncate mb-1">
+                                    <i class="fa-solid fa-user text-slate-400 mr-1 text-[10px]"></i>
+                                    {{ $visit->guest_name }}
+                                </div>
+
+                                <div class="bg-slate-50 rounded-lg p-2 text-[11px] text-slate-600 space-y-1 border border-slate-100">
+                                    <div class="flex items-start justify-between gap-2">
+                                        <span class="text-slate-400 whitespace-nowrap">Guru Penerima:</span>
+                                        <span class="font-semibold text-right text-slate-800">
+                                            @if($visit->receivedByHost)
+                                                <span class="text-emerald-700 font-bold flex items-center justify-end gap-1">
+                                                    <i class="fa-solid fa-circle-check text-[10px]"></i>
+                                                    {{ $visit->receivedByHost->name }}
+                                                </span>
+                                            @elseif($visit->host)
+                                                <span>{{ $visit->host->name }}</span>
+                                            @else
+                                                <span class="text-slate-400 italic">Resepsionis / Frontdesk</span>
+                                            @endif
+                                        </span>
+                                    </div>
+                                    @if($visit->department)
+                                        <div class="flex items-center justify-between text-[10px] text-slate-400 pt-0.5">
+                                            <span>Tujuan:</span>
+                                            <span class="text-slate-500">{{ $visit->department->name }}</span>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="text-center py-6 text-slate-400">
+                        <i class="fa-regular fa-folder-open text-2xl mb-2 block"></i>
+                        <p class="text-xs">Belum ada aktivitas kunjungan terbaru.</p>
+                    </div>
+                @endif
+            </div>
             
             <!-- Petunjuk Kunjungan -->
             <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-md border border-slate-800">
