@@ -108,6 +108,26 @@
                             </span>
                         </div>
                     </div>
+ 
+                    <!-- Konfirmasi Janji -->
+                    <div class="grid grid-cols-2 gap-4 text-xs pt-3 border-t border-slate-100">
+                        <div>
+                            <span class="text-slate-400 block font-semibold">
+                                Konfirmasi Janji:
+                            </span>
+
+                            @if($visit->has_appointment === true || $visit->has_appointment === 1 || $visit->has_appointment === '1')
+                                <span class="inline-block mt-1 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 font-semibold">
+                                    Sudah Membuat Janji
+                                </span>
+                            @else
+                                <span class="inline-block mt-1 px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 font-semibold">
+                                    Belum Membuat Janji
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
 
                     <div class="grid grid-cols-2 gap-4 text-xs pt-3 border-t border-slate-100">
                         <div>

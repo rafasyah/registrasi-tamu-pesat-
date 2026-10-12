@@ -19,6 +19,8 @@ class GuestVisit extends Model
         'purpose',
         'department_id',
         'host_id',
+        'received_by_host_id',
+        'has_appointment',
         'visit_date',
         'scheduled_time',
         'guest_count',
@@ -44,26 +46,34 @@ class GuestVisit extends Model
         return $this->belongsTo(Department::class);
     }
 
+    // Guru/staf yang dituju saat tamu mendaftar
     public function host(): BelongsTo
     {
         return $this->belongsTo(Host::class);
     }
 
+    // Guru/staf yang benar-benar menerima tamu
+    public function receivedByHost(): BelongsTo
+    {
+        return $this->belongsTo(Host::class, 'received_by_host_id');
+    }
+
     public static function generateTicketCode(): string
     {
-        $prefix = 'JTT-'.date('Ymd').'-';
-        $latest = static::where('ticket_code', 'LIKE', $prefix.'%')
+        $prefix = 'JTT-' . date('Ymd') . '-';
+
+        $latest = static::where('ticket_code', 'LIKE', $prefix . '%')
             ->orderBy('id', 'desc')
             ->first();
 
         if (! $latest) {
-            return $prefix.'0001';
+            return $prefix . '0001';
         }
 
         $number = (int) substr($latest->ticket_code, -4);
         $next = str_pad($number + 1, 4, '0', STR_PAD_LEFT);
 
-        return $prefix.$next;
+        return $prefix . $next;
     }
 
     public function getStatusLabelAttribute(): string
