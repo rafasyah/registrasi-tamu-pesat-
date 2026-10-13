@@ -124,6 +124,7 @@
                         <th class="py-3 px-4">Keperluan</th>
                         <th class="py-3 px-4">Tujuan (Host/Dept)</th>
                         <th class="py-3 px-4">Diterima Oleh</th>
+                        <th class="py-3 px-4">Hasil Pertemuan</th>
                         <th class="py-3 px-4 text-center">Status</th>
                         <th class="py-3 px-4 text-center">Rating</th>
                     </tr>
@@ -145,6 +146,15 @@
                                 <td class="py-3 px-4">
                                     {{ $visit->receivedByHost->name ?? '-' }}
                                 </td>
+                                <td class="py-3 px-4">
+                                    @if($visit->meeting_result)
+                                        <span class="text-slate-800 text-xs block max-w-xs truncate" title="{{ $visit->meeting_result }}">
+                                            {{ $visit->meeting_result }}
+                                        </span>
+                                    @else
+                                        <span class="text-slate-300">-</span>
+                                    @endif
+                                </td>
                             <td class="py-3 px-4 text-center">
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border {{ $visit->status_badge }}">
                                     {{ $visit->status_label }}
@@ -160,7 +170,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="py-12 text-center text-slate-400">Tidak ada data rekapitulasi untuk filter ini. </td>                        </tr>
+                            <td colspan="9" class="py-12 text-center text-slate-400">Tidak ada data rekapitulasi untuk filter ini. </td>                        </tr>
                     @endforelse
                 </tbody>
             </table>

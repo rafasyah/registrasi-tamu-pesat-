@@ -179,7 +179,7 @@
                                 <div class="flex items-center justify-end space-x-1.5">
                                     
                                     <!-- Detail Modal Trigger -->
-                                    <button onclick="openDetailModal({{ json_encode($visit) }})" class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs transition-colors" title="Lihat Detail">
+                                    <button type="button" data-visit='@json($visit)' onclick="openDetailModalFromEl(this)" class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs transition-colors" title="Lihat Detail">
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
 
@@ -198,7 +198,7 @@
                                             </button>
                                         </form>
 
-                                        <button onclick="openRejectModal({{ $visit->id }}, '{{ $visit->ticket_code }}')" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-bold transition-colors">
+                                        <button type="button" onclick="openRejectModal({{ $visit->id }}, '{{ $visit->ticket_code }}')" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-bold transition-colors">
                                             Tolak
                                         </button>
                                     @endif
@@ -214,13 +214,16 @@
                                     @endif
 
                                     @if($visit->status === 'checked_in')
-                                        <form action="{{ route('admin.visits.update_status', $visit->id) }}" method="POST" class="inline">
-                                            @csrf @method('PATCH')
-                                            <input type="hidden" name="status" value="checked_out">
-                                            <button type="submit" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-bold transition-colors">
-                                                Check-Out
-                                            </button>
-                                        </form>
+                                        <button
+                                            type="button"
+                                            data-id="{{ $visit->id }}"
+                                            data-ticket="{{ $visit->ticket_code }}"
+                                            data-guest="{{ $visit->guest_name }}"
+                                            onclick="openCheckOutModalFromEl(this)"
+                                            class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                                        >
+                                            Check-Out
+                                        </button>
                                     @endif
                                 </div>
                             </td>
@@ -338,7 +341,56 @@
         </form>
     </div>
 </div>
- 
+
+<!-- Check-Out Modal with Hasil Pertemuan -->
+<div id="checkout-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+        <div class="flex items-center space-x-3 pb-3 border-b border-slate-100">
+            <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center font-bold text-lg">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-base text-slate-900">Konfirmasi Check-Out Tamu</h3>
+                <p class="text-xs text-slate-500" id="checkout-guest-text"></p>
+            </div>
+        </div>
+
+        <form id="checkout-form" method="POST" class="space-y-4">
+            @csrf
+            @method('PATCH')
+            <input type="hidden" name="status" value="checked_out">
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                    Hasil Pertemuan / Notula Kunjungan
+                </label>
+                <textarea
+                    name="meeting_result"
+                    rows="3"
+                    placeholder="Contoh: Kunjungan konsultasi wali murid telah selesai. Disepakati bimbingan belajar tambahan..."
+                    class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-slate-800 transition-all"
+                ></textarea>
+                <p class="text-[11px] text-slate-400 mt-1">Catat rangkuman atau poin hasil pertemuan yang telah dilaksanakan (opsional).</p>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+                <button
+                    type="button"
+                    onclick="closeCheckOutModal()"
+                    class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold"
+                >
+                    Batal
+                </button>
+                <button
+                    type="submit"
+                    class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-colors"
+                >
+                    Simpan & Check-Out
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <!-- Visit Detail Modal -->
 <div id="detail-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
@@ -386,8 +438,34 @@
     }
 
 
+    function openCheckOutModalFromEl(el) {
+        const id = el.dataset.id;
+        const ticketCode = el.dataset.ticket;
+        const guestName = el.dataset.guest;
+        openCheckOutModal(id, ticketCode, guestName);
+    }
+
+    function openCheckOutModal(id, ticketCode, guestName) {
+        document.getElementById('checkout-guest-text').textContent = ticketCode + ' • ' + guestName;
+        document.getElementById('checkout-form').action = '/admin/visits/' + id + '/status';
+        document.getElementById('checkout-modal').classList.remove('hidden');
+    }
+
+    function closeCheckOutModal() {
+        document.getElementById('checkout-modal').classList.add('hidden');
+    }
+
     function closeRejectModal() {
         document.getElementById('reject-modal').classList.add('hidden');
+    }
+
+    function openDetailModalFromEl(el) {
+        try {
+            const visit = JSON.parse(el.dataset.visit);
+            openDetailModal(visit);
+        } catch (e) {
+            console.error('Failed to parse visit data', e);
+        }
     }
 
     function openDetailModal(visit) {
@@ -404,18 +482,20 @@
                 <div><span class="text-slate-400 block">Kode Tiket:</span> <strong class="text-orange-600 text-sm font-mono">${visit.ticket_code}</strong></div>
                 <div><span class="text-slate-400 block">Status:</span> <strong class="text-slate-800 uppercase">${visit.status}</strong></div>
                 <div><span class="text-slate-400 block">Nama Tamu:</span> <strong class="text-slate-800">${visit.guest_name}</strong></div>
-                <div><span class="text-slate-400 block">Instansi:</span> <span>${visit.institution}</span></div>
+                <div><span class="text-slate-400 block">Instansi:</span> <span>${visit.institution || '-'}</span></div>
                 <div><span class="text-slate-400 block">No Telepon:</span> <span>${visit.phone}</span></div>
                 <div><span class="text-slate-400 block">Email:</span> <span>${visit.email || '-'}</span></div>
                 <div><span class="text-slate-400 block">Keperluan:</span> <span>${visit.purpose}</span></div>
                 <div><span class="text-slate-400 block">Jumlah Tamu:</span> <span>${visit.guest_count} Orang</span></div>
                 <div><span class="text-slate-400 block">Guru/Staf:</span> <span>${visit.host ? visit.host.name : '-'}</span></div>
                 <div><span class="text-slate-400 block">Departemen:</span> <span>${visit.department ? visit.department.name : '-'}</span></div>
+                <div><span class="text-slate-400 block">Diterima Oleh:</span> <strong class="text-emerald-700">${visit.received_by_host ? visit.received_by_host.name : '-'}</strong></div>
                 <div><span class="text-slate-400 block">Tanggal Kunjungan:</span> <span>${visit.visit_date}</span></div>
                 <div><span class="text-slate-400 block">Plat Kendaraan:</span> <span>${visit.vehicle_number || '-'}</span></div>
             </div>
+            ${visit.meeting_result ? `<div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900"><strong>Hasil Pertemuan:</strong> ${visit.meeting_result}</div>` : ''}
             ${visit.notes ? `<div class="p-3 bg-amber-50 rounded-xl text-amber-900"><strong>Catatan:</strong> ${visit.notes}</div>` : ''}
-            ${visit.rating ? `<div class="p-3 bg-emerald-50 rounded-xl text-emerald-900"><strong>Rating:</strong> ${visit.rating}/5 &bull; <em>"${visit.feedback_comment || ''}"</em></div>` : ''}
+            ${visit.rating ? `<div class="p-3 bg-indigo-50 rounded-xl text-indigo-900"><strong>Rating:</strong> ${visit.rating}/5 &bull; <em>"${visit.feedback_comment || ''}"</em></div>` : ''}
         `;
 
         document.getElementById('detail-modal').classList.remove('hidden');

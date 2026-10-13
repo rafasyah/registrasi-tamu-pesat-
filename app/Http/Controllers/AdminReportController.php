@@ -148,12 +148,11 @@ class AdminReportController extends Controller
         $visits = $query->get();
 
         $csvFileName = 'rekap_buku_tamu_'
-            . $startDate . '_to_' . $endDate . '.csv';
+            .$startDate.'_to_'.$endDate.'.csv';
 
         $headers = [
             'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' =>
-                "attachment; filename=\"$csvFileName\"",
+            'Content-Disposition' => "attachment; filename=\"$csvFileName\"",
             'Pragma' => 'no-cache',
             'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
             'Expires' => '0',
@@ -163,7 +162,7 @@ class AdminReportController extends Controller
             $file = fopen('php://output', 'w');
 
             // BOM agar karakter terbaca dengan baik di Excel.
-            fwrite($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+            fwrite($file, chr(0xEF).chr(0xBB).chr(0xBF));
 
             fputcsv($file, [
                 'No Tiket',
@@ -182,6 +181,7 @@ class AdminReportController extends Controller
                 'Status',
                 'Waktu Check-In',
                 'Waktu Check-Out',
+                'Hasil Pertemuan',
                 'Rating',
                 'Ulasan',
             ]);
@@ -210,7 +210,8 @@ class AdminReportController extends Controller
                     $visit->check_out_at
                         ? $visit->check_out_at->format('Y-m-d H:i:s')
                         : '-',
-                    $visit->rating ? $visit->rating . '/5' : '-',
+                    $visit->meeting_result ?? '-',
+                    $visit->rating ? $visit->rating.'/5' : '-',
                     $visit->feedback_comment ?? '-',
                 ]);
             }

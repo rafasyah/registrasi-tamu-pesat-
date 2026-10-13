@@ -97,6 +97,8 @@ class AdminDashboardController extends Controller
                     $query->where('status', 'available');
                 }),
             ],
+
+            'meeting_result' => 'nullable|string',
         ]);
 
         $newStatus = $request->input('status');
@@ -115,8 +117,13 @@ class AdminDashboardController extends Controller
             }
         }
 
-        if ($newStatus === 'checked_out' && ! $visit->check_out_at) {
-            $data['check_out_at'] = now();
+        if ($newStatus === 'checked_out') {
+            if (! $visit->check_out_at) {
+                $data['check_out_at'] = now();
+            }
+            if ($request->filled('meeting_result')) {
+                $data['meeting_result'] = $request->input('meeting_result');
+            }
         }
 
         if ($newStatus === 'rejected') {

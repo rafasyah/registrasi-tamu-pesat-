@@ -33,6 +33,7 @@ class GuestVisit extends Model
         'check_out_at',
         'rating',
         'feedback_comment',
+        'meeting_result',
     ];
 
     protected $casts = [
@@ -60,20 +61,20 @@ class GuestVisit extends Model
 
     public static function generateTicketCode(): string
     {
-        $prefix = 'JTT-' . date('Ymd') . '-';
+        $prefix = 'JTT-'.date('Ymd').'-';
 
-        $latest = static::where('ticket_code', 'LIKE', $prefix . '%')
+        $latest = static::where('ticket_code', 'LIKE', $prefix.'%')
             ->orderBy('id', 'desc')
             ->first();
 
         if (! $latest) {
-            return $prefix . '0001';
+            return $prefix.'0001';
         }
 
         $number = (int) substr($latest->ticket_code, -4);
         $next = str_pad($number + 1, 4, '0', STR_PAD_LEFT);
 
-        return $prefix . $next;
+        return $prefix.$next;
     }
 
     public function getStatusLabelAttribute(): string

@@ -26,11 +26,11 @@
                     <i class="fa-solid fa-print"></i>
                     <span>Cetak Pass</span>
                 </button>
-                @if($visit->status === 'checked_in' || $visit->status === 'approved')
-                    <a href="{{ route('guest.checkout', ['code' => $visit->ticket_code]) }}" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-md flex items-center space-x-2 transition-all">
+                @if($visit->status === 'checked_in')
+                    <button type="button" onclick="openTicketCheckoutModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-md flex items-center space-x-2 transition-all">
                         <i class="fa-solid fa-right-from-bracket"></i>
                         <span>Check-Out Sekarang</span>
-                    </a>
+                    </button>
                 @endif
             </div>
         </div>
@@ -140,6 +140,15 @@
                         </div>
                     </div>
 
+                    @if($visit->meeting_result)
+                        <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-900 mt-2">
+                            <strong class="block font-bold mb-1 text-emerald-800 flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-lines text-emerald-600"></i> Hasil Pertemuan / Notula Kunjungan:
+                            </strong>
+                            {{ $visit->meeting_result }}
+                        </div>
+                    @endif
+
                     @if($visit->rejection_reason)
                         <div class="p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-800 mt-2">
                             <strong class="block font-bold mb-1">Alasan Penolakan:</strong>
@@ -177,11 +186,89 @@
         </div>
     </div>
 
+    <!-- Check-Out Modal with Hasil Pertemuan & Feedback -->
+    <div id="ticket-checkout-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div class="flex items-center space-x-3 pb-3 border-b border-slate-100">
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-lg">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-base text-slate-900">Check-Out Kunjungan</h3>
+                    <p class="text-xs text-slate-500">Tiket: {{ $visit->ticket_code }}</p>
+                </div>
+            </div>
+
+            <form method="POST" action="{{ route('guest.checkout', ['code' => $visit->ticket_code]) }}" class="space-y-4">
+                @csrf
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                        Hasil Pertemuan yang Telah Dilakukan
+                    </label>
+                    <textarea
+                        name="meeting_result"
+                        rows="3"
+                        placeholder="Tuliskan hasil/kesimpulan pertemuan yang telah Anda lakukan..."
+                        class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+                    ></textarea>
+                    <p class="text-[11px] text-slate-400 mt-1">Ringkasan hasil pertemuan dengan pihak sekolah (opsional).</p>
+                </div>
+
+                <div class="pt-2 border-t border-slate-100 text-center">
+                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                        Tingkat Kepuasan Layanan Bertamu
+                    </label>
+                    <div class="flex items-center justify-center space-x-2 my-2" id="star-rating-container">
+                        @for($i = 1; $i <= 5; $i++)
+                            <label class="cursor-pointer transition-transform hover:scale-125">
+                                <input type="radio" name="rating" value="{{ $i }}" class="sr-only star-input" {{ $i === 5 ? 'checked' : '' }}>
+                                <i class="fa-solid fa-star text-2xl star-icon text-amber-400 transition-colors" data-rating="{{ $i }}"></i>
+                            </label>
+                        @endfor
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                        Kesan & Pesan / Masukan (Opsional)
+                    </label>
+                    <input type="text" name="feedback_comment" placeholder="Ulasan atau saran..."
+                        class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+                    <button
+                        type="button"
+                        onclick="closeTicketCheckoutModal()"
+                        class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold"
+                    >
+                        Batal
+                    </button>
+                    <button
+                        type="submit"
+                        class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-colors"
+                    >
+                        Selesai & Check-Out
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </div>
 @endsection
 
 @push('scripts')
 <script>
+    function openTicketCheckoutModal() {
+        document.getElementById('ticket-checkout-modal').classList.remove('hidden');
+    }
+
+    function closeTicketCheckoutModal() {
+        document.getElementById('ticket-checkout-modal').classList.add('hidden');
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // Generate QR Code
         const qrcodeContainer = document.getElementById('qrcode');
@@ -195,6 +282,27 @@
                 correctLevel : QRCode.CorrectLevel.H
             });
         }
+
+        // Star rating
+        const stars = document.querySelectorAll('.star-icon');
+        const starInputs = document.querySelectorAll('.star-input');
+        function updateStars(val) {
+            stars.forEach(star => {
+                const r = parseInt(star.dataset.rating);
+                if (r <= val) {
+                    star.classList.remove('text-slate-300');
+                    star.classList.add('text-amber-400');
+                } else {
+                    star.classList.remove('text-amber-400');
+                    star.classList.add('text-slate-300');
+                }
+            });
+        }
+        starInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                updateStars(parseInt(this.value));
+            });
+        });
     });
 </script>
 <style>

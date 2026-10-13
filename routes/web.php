@@ -20,7 +20,7 @@ Route::get('/api/departments/{department}/hosts', [GuestRegistrationController::
 Route::get('/tiket/{code}', [TicketPassController::class, 'show'])->name('ticket.show');
 Route::get('/cek-tiket', [TicketPassController::class, 'lookup'])->name('ticket.lookup');
 Route::post('/cek-tiket', [TicketPassController::class, 'search'])->name('ticket.search');
-Route::get('/tiket/{code}/checkout', [TicketPassController::class, 'checkout'])->name('guest.checkout');
+Route::match(['get', 'post'], '/tiket/{code}/checkout', [TicketPassController::class, 'checkout'])->name('guest.checkout');
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
@@ -60,6 +60,9 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
     Route::delete('/schedules/{schedule}', [TeacherScheduleController::class, 'destroy'])->name('schedules.destroy');
     Route::post('/schedules/{schedule}/guest-visits', [TeacherScheduleController::class, 'attachGuestVisit'])->name('schedules.guest_visits.attach');
     Route::delete('/schedules/{schedule}/guest-visits/{guestVisit}', [TeacherScheduleController::class, 'detachGuestVisit'])->name('schedules.guest_visits.detach');
+
+    // Validasi Ajuan Jadwal Kunjungan Orang Tua
+    Route::post('/guest-visits/{guestVisit}/validate', [TeacherScheduleController::class, 'validateParentVisit'])->name('guest_visits.validate');
 
     // Notifications
     Route::get('/notifications', [TeacherScheduleController::class, 'notifications'])->name('notifications');

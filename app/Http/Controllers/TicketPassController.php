@@ -41,18 +41,32 @@ class TicketPassController extends Controller
         return redirect()->route('ticket.show', $visit->ticket_code);
     }
 
-    public function checkout($code)
+    public function checkout(Request $request, $code)
     {
         $visit = GuestVisit::where('ticket_code', $code)->firstOrFail();
 
         if ($visit->status === 'checked_in') {
-            $visit->update([
+            $data = [
                 'status' => 'checked_out',
                 'check_out_at' => now(),
-            ]);
+            ];
+
+            if ($request->filled('meeting_result')) {
+                $data['meeting_result'] = $request->input('meeting_result');
+            }
+
+            if ($request->filled('rating')) {
+                $data['rating'] = (int) $request->input('rating');
+            }
+
+            if ($request->filled('feedback_comment')) {
+                $data['feedback_comment'] = $request->input('feedback_comment');
+            }
+
+            $visit->update($data);
         }
 
         return redirect()->route('ticket.show', $visit->ticket_code)
-            ->with('success', 'Check-out berhasil. Terima kasih.');
+            ->with('success', 'Check-out berhasil. Terima kasih atas kunjungan Anda.');
     }
 }

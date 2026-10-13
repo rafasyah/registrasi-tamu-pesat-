@@ -48,11 +48,20 @@ class TeacherScheduleController extends Controller
 
         $unreadNotifications = Notification::where('user_id', Auth::id())->unread()->count();
 
+        // Kunjungan / Ajuan Jadwal dari Orang Tua / Wali Murid yang ditujukan ke guru ini
+        $parentVisits = GuestVisit::where('host_id', $teacher->host?->id)
+            ->with(['department'])
+            ->orderByRaw("CASE WHEN status = 'pending' THEN 1 ELSE 2 END")
+            ->orderByDesc('visit_date')
+            ->orderBy('scheduled_time')
+            ->get();
+
         return view('teacher.dashboard', compact(
             'schedules',
             'departments',
             'stats',
-            'unreadNotifications'
+            'unreadNotifications',
+            'parentVisits'
         ));
     }
 
@@ -201,6 +210,68 @@ class TeacherScheduleController extends Controller
         $schedule->guestVisits()->detach($guestVisit->id);
 
         return back()->with('success', 'Tamu berhasil dihapus dari jadwal pertemuan.');
+    }
+
+    public function validateParentVisit(Request $request, GuestVisit $guestVisit)
+    {
+        $hostId = Auth::user()->host?->id;
+
+        if (! $hostId || (int) $guestVisit->host_id !== (int) $hostId) {
+            abort(403, 'Anda bukan guru yang dituju untuk kunjungan ini.');
+        }
+
+        $validated = $request->validate([
+            'action' => 'required|in:approve,reschedule,reject',
+            'visit_date' => 'nullable|date',
+            'scheduled_time' => 'nullable|string',
+            'notes' => 'nullable|string',
+            'rejection_reason' => 'required_if:action,reject|nullable|string',
+        ]);
+
+        if ($validated['action'] === 'approve') {
+            $data = [
+                'status' => 'approved',
+            ];
+            if (! empty($validated['visit_date'])) {
+                $data['visit_date'] = $validated['visit_date'];
+            }
+            if (! empty($validated['scheduled_time'])) {
+                $data['scheduled_time'] = $validated['scheduled_time'];
+            }
+            if (! empty($validated['notes'])) {
+                $data['notes'] = $guestVisit->notes ? $guestVisit->notes.' | Catatan Guru: '.$validated['notes'] : $validated['notes'];
+            }
+            $guestVisit->update($data);
+
+            return back()->with('success', "Ajuan jadwal kunjungan {$guestVisit->guest_name} ({$guestVisit->ticket_code}) berhasil disetujui.");
+        }
+
+        if ($validated['action'] === 'reschedule') {
+            $request->validate([
+                'visit_date' => 'required|date',
+                'scheduled_time' => 'required',
+            ]);
+
+            $guestVisit->update([
+                'status' => 'approved',
+                'visit_date' => $validated['visit_date'],
+                'scheduled_time' => $validated['scheduled_time'],
+                'notes' => $guestVisit->notes ? $guestVisit->notes.' | Jadwal disesuaikan guru: '.($validated['notes'] ?? 'Tanpa catatan') : ($validated['notes'] ?? 'Jadwal disesuaikan oleh guru'),
+            ]);
+
+            return back()->with('success', "Jadwal kunjungan {$guestVisit->guest_name} telah disesuaikan menjadi tanggal {$validated['visit_date']} jam {$validated['scheduled_time']} dan disetujui.");
+        }
+
+        if ($validated['action'] === 'reject') {
+            $guestVisit->update([
+                'status' => 'rejected',
+                'rejection_reason' => $validated['rejection_reason'],
+            ]);
+
+            return back()->with('success', "Ajuan jadwal kunjungan {$guestVisit->guest_name} telah ditolak.");
+        }
+
+        return back();
     }
 
     private function authorizeSchedule(TeacherSchedule $schedule): void
