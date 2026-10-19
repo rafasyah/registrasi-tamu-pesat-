@@ -234,13 +234,9 @@
                                 <div class="flex items-center justify-end space-x-1.5">
                                     @if($pVisit->status === 'pending')
                                         <!-- Terima Langsung -->
-                                        <form action="{{ route('teacher.guest_visits.validate', $pVisit) }}" method="POST" class="inline">
-                                            @csrf
-                                            <input type="hidden" name="action" value="approve">
-                                            <button type="submit" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-colors shadow-xs" title="Setujui Sesuai Jadwal Ajuan">
-                                                <i class="fa-solid fa-check mr-1"></i> Terima
-                                            </button>
-                                        </form>
+                                        <button type="button" onclick="openConfirmApproveModal({{ $pVisit->id }}, '{{ $pVisit->ticket_code }}', '{{ addslashes($pVisit->guest_name) }}', '{{ $pVisit->visit_date ? $pVisit->visit_date->format('Y-m-d') : '' }}', '{{ substr($pVisit->scheduled_time, 0, 5) }}')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-colors shadow-xs" title="Setujui Sesuai Jadwal Ajuan">
+                                            <i class="fa-solid fa-check mr-1"></i> Terima
+                                        </button>
 
                                         <!-- Ubah Jam/Tanggal (Reschedule) -->
                                         <button
@@ -344,6 +340,57 @@
     </div>
 </div>
 
+<!-- Modal Konfirmasi Terima Ajuan -->
+<div id="teacher-confirm-approve-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+        <div class="flex items-center space-x-3 pb-3 border-b border-slate-100">
+            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-lg">
+                <i class="fa-solid fa-check-circle"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-base text-slate-900">Konfirmasi Persetujuan</h3>
+                <p class="text-xs text-slate-500" id="confirm-approve-guest-name"></p>
+            </div>
+        </div>
+
+        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 text-xs space-y-2">
+            <p class="text-slate-700">Apakah Anda yakin dapat menerima kunjungan ini sesuai jadwal yang diajukan?</p>
+            <div class="pt-2 border-t border-slate-200 flex flex-col gap-1">
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Tanggal:</span>
+                    <span class="font-semibold text-slate-800" id="confirm-approve-date"></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Jam:</span>
+                    <span class="font-semibold text-slate-800" id="confirm-approve-time"></span>
+                </div>
+            </div>
+        </div>
+
+        <form id="teacher-confirm-approve-form" method="POST" class="space-y-4">
+            @csrf
+            <input type="hidden" name="action" value="approve">
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                    Catatan Konfirmasi dari Guru (Opsional)
+                </label>
+                <textarea name="notes" rows="2" placeholder="Contoh: Bertemu di ruang guru, pastikan membawa berkas..."
+                    class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+                <button type="button" onclick="closeConfirmApproveModal()" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold">
+                    Batal
+                </button>
+                <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-colors">
+                    Ya, Saya Dapat Menerima
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- Modal Tolak Ajuan Orang Tua -->
 <div id="teacher-reject-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
@@ -403,6 +450,18 @@
 
     function closeTeacherRejectModal() {
         document.getElementById('teacher-reject-modal').classList.add('hidden');
+    }
+
+    function openConfirmApproveModal(id, ticketCode, guestName, visitDate, scheduledTime) {
+        document.getElementById('confirm-approve-guest-name').textContent = ticketCode + ' • ' + guestName;
+        document.getElementById('confirm-approve-date').textContent = visitDate ? (visitDate.split('-').reverse().join('/')) : '-';
+        document.getElementById('confirm-approve-time').textContent = scheduledTime ? (scheduledTime + ' WIB') : '-';
+        document.getElementById('teacher-confirm-approve-form').action = '/teacher/guest-visits/' + id + '/validate';
+        document.getElementById('teacher-confirm-approve-modal').classList.remove('hidden');
+    }
+
+    function closeConfirmApproveModal() {
+        document.getElementById('teacher-confirm-approve-modal').classList.add('hidden');
     }
 </script>
 @endpush
