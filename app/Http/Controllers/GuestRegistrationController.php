@@ -20,12 +20,19 @@ class GuestRegistrationController extends Controller
             ->orderBy('name')
             ->get();
 
+        $hostList = $hosts->map(fn ($h) => [
+            'id' => $h->id,
+            'name' => $h->name,
+            'department_id' => $h->department_id,
+            'department_name' => $h->department?->name ?? 'Staf / Divisi',
+        ]);
+
         $recentVisits = GuestVisit::with(['department', 'host', 'receivedByHost'])
             ->latest()
             ->take(6)
             ->get();
 
-        return view('guest.register', compact('departments', 'hosts', 'recentVisits'));
+        return view('guest.register', compact('departments', 'hosts', 'hostList', 'recentVisits'));
     }
 
     public function getHostsByDepartment(Department $department)
@@ -41,6 +48,7 @@ class GuestRegistrationController extends Controller
     {
         $validated = $request->validate([
             'guest_name' => 'required|string|max:255',
+            'institution' => 'nullable|string|max:255',
             'phone' => 'required|string|max:30',
             'email' => 'nullable|email|max:255',
             'purpose' => 'required|string|max:255',
@@ -125,7 +133,7 @@ class GuestRegistrationController extends Controller
 
             'guest_name' => $validated['guest_name'],
 
-            'institution' => null,
+            'institution' => $validated['institution'] ?? null,
 
             'phone' => $validated['phone'],
 

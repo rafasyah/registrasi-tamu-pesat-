@@ -31,7 +31,6 @@ class GuestVisit extends Model
         'rejection_reason',
         'check_in_at',
         'check_out_at',
-        'rating',
         'feedback_comment',
         'meeting_result',
     ];

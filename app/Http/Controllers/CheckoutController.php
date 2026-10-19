@@ -25,7 +25,6 @@ class CheckoutController extends Controller
     {
         $request->validate([
             'ticket_code' => 'required|string',
-            'rating' => 'nullable|integer|min:1|max:5',
             'feedback_comment' => 'nullable|string',
         ]);
 
@@ -43,7 +42,6 @@ class CheckoutController extends Controller
         $visit->update([
             'status' => 'checked_out',
             'check_out_at' => now(),
-            'rating' => $request->input('rating'),
             'feedback_comment' => $request->input('feedback_comment'),
         ]);
 

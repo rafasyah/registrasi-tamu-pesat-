@@ -98,13 +98,6 @@
             <span class="text-[11px] text-slate-400">Permohonan ditolak</span>
         </div>
 
-        <div class="bg-white p-5 rounded-2xl shadow-xs border border-slate-200">
-            <p class="text-xs font-semibold text-slate-500 uppercase">Rata-rata Rating Kepuasan</p>
-            <h3 class="text-2xl font-extrabold text-amber-500 mt-1">
-                {{ $avgRating ? number_format($avgRating, 1) : '-' }} <span class="text-xs font-semibold text-slate-400">/ 5.0</span>
-            </h3>
-            <span class="text-[11px] text-slate-400">Dari ulasan pengunjung</span>
-        </div>
     </div>
 
     <!-- Data Table Card -->
@@ -126,7 +119,6 @@
                         <th class="py-3 px-4">Diterima Oleh</th>
                         <th class="py-3 px-4">Hasil Pertemuan</th>
                         <th class="py-3 px-4 text-center">Status</th>
-                        <th class="py-3 px-4 text-center">Rating</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -160,17 +152,10 @@
                                     {{ $visit->status_label }}
                                 </span>
                             </td>
-                            <td class="py-3 px-4 text-center font-bold text-amber-500">
-                                @if($visit->rating)
-                                    <i class="fa-solid fa-star text-[10px]"></i> {{ $visit->rating }}/5
-                                @else
-                                    <span class="text-slate-300 font-normal">-</span>
-                                @endif
-                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="py-12 text-center text-slate-400">Tidak ada data rekapitulasi untuk filter ini. </td>                        </tr>
+                            <td colspan="8" class="py-12 text-center text-slate-400">Tidak ada data rekapitulasi untuk filter ini. </td>                        </tr>
                     @endforelse
                 </tbody>
             </table>

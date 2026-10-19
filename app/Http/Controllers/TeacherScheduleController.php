@@ -70,10 +70,11 @@ class TeacherScheduleController extends Controller
         $departments = Department::orderBy('name')->get();
         $host = Auth::user()->host;
 
-        return view('teacher.schedule_form', compact(
-            'departments',
-            'host'
-        ));
+        return view('teacher.schedule_form', [
+            'schedule' => null,
+            'departments' => $departments,
+            'host' => $host,
+        ]);
     }
 
     public function store(Request $request)

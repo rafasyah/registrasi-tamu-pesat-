@@ -215,20 +215,6 @@
                     <p class="text-[11px] text-slate-400 mt-1">Ringkasan hasil pertemuan dengan pihak sekolah (opsional).</p>
                 </div>
 
-                <div class="pt-2 border-t border-slate-100 text-center">
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                        Tingkat Kepuasan Layanan Bertamu
-                    </label>
-                    <div class="flex items-center justify-center space-x-2 my-2" id="star-rating-container">
-                        @for($i = 1; $i <= 5; $i++)
-                            <label class="cursor-pointer transition-transform hover:scale-125">
-                                <input type="radio" name="rating" value="{{ $i }}" class="sr-only star-input" {{ $i === 5 ? 'checked' : '' }}>
-                                <i class="fa-solid fa-star text-2xl star-icon text-amber-400 transition-colors" data-rating="{{ $i }}"></i>
-                            </label>
-                        @endfor
-                    </div>
-                </div>
-
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
                         Kesan & Pesan / Masukan (Opsional)
@@ -282,27 +268,6 @@
                 correctLevel : QRCode.CorrectLevel.H
             });
         }
-
-        // Star rating
-        const stars = document.querySelectorAll('.star-icon');
-        const starInputs = document.querySelectorAll('.star-input');
-        function updateStars(val) {
-            stars.forEach(star => {
-                const r = parseInt(star.dataset.rating);
-                if (r <= val) {
-                    star.classList.remove('text-slate-300');
-                    star.classList.add('text-amber-400');
-                } else {
-                    star.classList.remove('text-amber-400');
-                    star.classList.add('text-slate-300');
-                }
-            });
-        }
-        starInputs.forEach(input => {
-            input.addEventListener('change', function() {
-                updateStars(parseInt(this.value));
-            });
-        });
     });
 </script>
 <style>

@@ -63,7 +63,7 @@
                     <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                         Tanggal <span class="text-rose-500">*</span>
                     </label>
-                    <input type="date" name="scheduled_date" value="{{ old('scheduled_date', $schedule->scheduled_date->format('Y-m-d') ?? '') }}" required
+                    <input type="date" name="scheduled_date" value="{{ old('scheduled_date', $schedule?->scheduled_date?->format('Y-m-d')) }}" required
                         class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
                     @error('scheduled_date')
                         <p class="text-[10px] text-rose-600 mt-1">{{ $message }}</p>

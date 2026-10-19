@@ -55,10 +55,6 @@ class TicketPassController extends Controller
                 $data['meeting_result'] = $request->input('meeting_result');
             }
 
-            if ($request->filled('rating')) {
-                $data['rating'] = (int) $request->input('rating');
-            }
-
             if ($request->filled('feedback_comment')) {
                 $data['feedback_comment'] = $request->input('feedback_comment');
             }

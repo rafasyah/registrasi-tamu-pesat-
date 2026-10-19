@@ -170,7 +170,6 @@ class DatabaseSeeder extends Seeder
                 'status' => 'checked_out',
                 'check_in_at' => now()->subHours(3),
                 'check_out_at' => now()->subHours(2),
-                'rating' => 5,
                 'feedback_comment' => 'Pelayanan cepat dan ramah sekali di bagian TU. Terima kasih PESAT!',
             ]
         );

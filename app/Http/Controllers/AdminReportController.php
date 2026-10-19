@@ -96,8 +96,6 @@ class AdminReportController extends Controller
 
         $totalRejected = $visits->where('status', 'rejected')->count();
 
-        $avgRating = $visits->whereNotNull('rating')->avg('rating');
-
         $purposeCounts = $visits->groupBy('purpose')->map->count();
 
         $deptCounts = $visits
@@ -115,7 +113,6 @@ class AdminReportController extends Controller
             'totalVisits',
             'totalApproved',
             'totalRejected',
-            'avgRating',
             'purposeCounts',
             'deptCounts'
         ));
@@ -182,7 +179,6 @@ class AdminReportController extends Controller
                 'Waktu Check-In',
                 'Waktu Check-Out',
                 'Hasil Pertemuan',
-                'Rating',
                 'Ulasan',
             ]);
 
@@ -211,7 +207,6 @@ class AdminReportController extends Controller
                         ? $visit->check_out_at->format('Y-m-d H:i:s')
                         : '-',
                     $visit->meeting_result ?? '-',
-                    $visit->rating ? $visit->rating.'/5' : '-',
                     $visit->feedback_comment ?? '-',
                 ]);
             }

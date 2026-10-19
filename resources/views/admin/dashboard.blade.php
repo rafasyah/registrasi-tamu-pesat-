@@ -495,7 +495,7 @@
             </div>
             ${visit.meeting_result ? `<div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900"><strong>Hasil Pertemuan:</strong> ${visit.meeting_result}</div>` : ''}
             ${visit.notes ? `<div class="p-3 bg-amber-50 rounded-xl text-amber-900"><strong>Catatan:</strong> ${visit.notes}</div>` : ''}
-            ${visit.rating ? `<div class="p-3 bg-indigo-50 rounded-xl text-indigo-900"><strong>Rating:</strong> ${visit.rating}/5 &bull; <em>"${visit.feedback_comment || ''}"</em></div>` : ''}
+            ${visit.feedback_comment ? `<div class="p-3 bg-indigo-50 rounded-xl text-indigo-900"><strong>Ulasan:</strong> <em>"${visit.feedback_comment}"</em></div>` : ''}
         `;
 
         document.getElementById('detail-modal').classList.remove('hidden');
