@@ -54,6 +54,7 @@ class GuestRegistrationController extends Controller
             'guest_count' => 'required|integer|min:1|max:100',
             'vehicle_number' => 'nullable|string|max:50',
             'notes' => 'nullable|string',
+            'has_appointment' => 'nullable|boolean',
 
             'captured_photo' => 'nullable|string',
             'photo' => 'nullable|image|max:5000',
@@ -144,6 +145,7 @@ class GuestRegistrationController extends Controller
             'vehicle_number' => $validated['vehicle_number'] ?? null,
 
             'notes' => $validated['notes'] ?? null,
+            'has_appointment' => isset($validated['has_appointment']) ? (bool) $validated['has_appointment'] : null,
 
             'photo_path' => $photoPath,
 

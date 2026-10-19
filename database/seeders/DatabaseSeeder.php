@@ -32,6 +32,15 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        $teacherUser = User::updateOrCreate(
+            ['email' => 'guru@pesat.sch.id'],
+            [
+                'name' => 'Guru Contoh PESAT',
+                'password' => Hash::make('password'),
+                'role' => 'teacher',
+            ]
+        );
+
         // Departments
         $deptData = [
             ['name' => 'Kepala Sekolah', 'code' => 'KS', 'description' => 'Kantor Kepala SMK PESAT'],
@@ -64,7 +73,7 @@ class DatabaseSeeder extends Seeder
         $hosts = [];
         foreach ($hostsData as $h) {
             $dept = $departments[$h['dept']];
-            $hosts[] = Host::updateOrCreate(
+            $host = Host::updateOrCreate(
                 ['nip_nik' => $h['nip']],
                 [
                     'department_id' => $dept->id,
@@ -75,6 +84,13 @@ class DatabaseSeeder extends Seeder
                     'status' => $h['status'],
                 ]
             );
+            $hosts[] = $host;
+
+            // Link first host to teacher account as example
+            if (count($hosts) === 1) {
+                $host->user_id = $teacherUser->id;
+                $host->save();
+            }
         }
 
         // Demo Visits
