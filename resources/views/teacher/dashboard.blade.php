@@ -12,31 +12,31 @@
 
         <div class="bg-white p-5 rounded-2xl shadow-xs border border-slate-200 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Jadwal</p>
+                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Ajuan</p>
                 <h3 class="text-2xl font-extrabold text-slate-900 mt-1">{{ $stats['total'] }}</h3>
             </div>
             <div class="w-12 h-12 rounded-xl bg-slate-50 text-slate-600 flex items-center justify-center font-bold text-xl">
+                <i class="fa-solid fa-envelope-open-text"></i>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl shadow-xs border border-slate-200 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Disetujui</p>
+                <h3 class="text-2xl font-extrabold text-blue-600 mt-1">{{ $stats['scheduled'] }}</h3>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xl">
                 <i class="fa-solid fa-calendar-check"></i>
             </div>
         </div>
 
         <div class="bg-white p-5 rounded-2xl shadow-xs border border-slate-200 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Dijadwalkan</p>
-                <h3 class="text-2xl font-extrabold text-blue-600 mt-1">{{ $stats['scheduled'] }}</h3>
-            </div>
-            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xl">
-                <i class="fa-solid fa-clock"></i>
-            </div>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl shadow-xs border border-slate-200 flex items-center justify-between">
-            <div>
-                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Berlanjut</p>
+                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Sedang Berkunjung</p>
                 <h3 class="text-2xl font-extrabold text-emerald-600 mt-1">{{ $stats['ongoing'] }}</h3>
             </div>
             <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xl">
-                <i class="fa-solid fa-spinner-third animate-spin-slow"></i>
+                <i class="fa-solid fa-person-walking-arrow-right"></i>
             </div>
         </div>
 
@@ -52,7 +52,7 @@
 
         <div class="bg-white p-5 rounded-2xl shadow-xs border border-slate-200 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Dibatalkan</p>
+                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Ditolak</p>
                 <h3 class="text-2xl font-extrabold text-rose-600 mt-1">{{ $stats['cancelled'] }}</h3>
             </div>
             <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-xl">
@@ -66,12 +66,8 @@
     <!-- Schedule List -->
     <div class="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-hidden">
 
-        <div class="p-6 border-b border-slate-200 flex items-center justify-between">
+        <div class="p-6 border-b border-slate-200">
             <h3 class="text-lg font-bold text-slate-800">Daftar Jadwal Pertemuan</h3>
-            <a href="{{ route('teacher.schedules.create') }}" class="px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-bold transition-colors flex items-center space-x-2">
-                <i class="fa-solid fa-plus"></i>
-                <span>Buat Jadwal</span>
-            </a>
         </div>
 
         <div class="overflow-x-auto">
@@ -143,9 +139,6 @@
                             <td colspan="6" class="py-12 text-center text-slate-400">
                                 <i class="fa-solid fa-calendar-xmark text-4xl mb-3 block text-slate-300"></i>
                                 <p class="text-sm">Belum ada jadwal pertemuan yang dibuat.</p>
-                                <a href="{{ route('teacher.schedules.create') }}" class="mt-2 inline-flex items-center text-orange-600 hover:text-orange-800 text-xs font-semibold">
-                                    <i class="fa-solid fa-plus mr-1"></i> Buat Jadwal Sekarang
-                                </a>
                             </td>
                         </tr>
                     @endforelse

@@ -38,12 +38,14 @@ class TeacherScheduleController extends Controller
         $schedules = $query->orderByDesc('scheduled_date')->orderByDesc('start_time')->paginate(15)->withQueryString();
         $departments = Department::orderBy('name')->get();
 
+        $hostId = $teacher->host?->id;
+
         $stats = [
-            'total' => TeacherSchedule::where('host_id', $teacher->host?->id)->count(),
-            'scheduled' => TeacherSchedule::where('host_id', $teacher->host?->id)->where('status', 'scheduled')->count(),
-            'ongoing' => TeacherSchedule::where('host_id', $teacher->host?->id)->where('status', 'ongoing')->count(),
-            'completed' => TeacherSchedule::where('host_id', $teacher->host?->id)->where('status', 'completed')->count(),
-            'cancelled' => TeacherSchedule::where('host_id', $teacher->host?->id)->where('status', 'cancelled')->count(),
+            'total' => GuestVisit::where('host_id', $hostId)->count(),
+            'scheduled' => GuestVisit::where('host_id', $hostId)->where('status', 'approved')->count(),
+            'ongoing' => GuestVisit::where('host_id', $hostId)->where('status', 'checked_in')->count(),
+            'completed' => GuestVisit::where('host_id', $hostId)->where('status', 'checked_out')->count(),
+            'cancelled' => GuestVisit::where('host_id', $hostId)->where('status', 'rejected')->count(),
         ];
 
         $unreadNotifications = Notification::where('user_id', Auth::id())->unread()->count();

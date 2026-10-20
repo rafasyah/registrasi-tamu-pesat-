@@ -32,10 +32,6 @@
             <a href="{{ route('teacher.schedules.index') }}" class="flex items-center px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('teacher.schedules*') ? 'bg-orange-600 text-white shadow-md' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
                 <i class="fa-solid fa-calendar-days w-6 text-center mr-2"></i> Jadwal Pertemuan
             </a>
-
-            <a href="{{ route('teacher.schedules.create') }}" class="flex items-center px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800">
-                <i class="fa-solid fa-plus w-6 text-center mr-2"></i> Buat Jadwal Baru
-            </a>
         </nav>
 
         <!-- User Info & Logout -->
