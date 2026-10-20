@@ -55,8 +55,9 @@ class AdminDashboardController extends Controller
 
         $departments = Department::orderBy('name')->get();
 
-        // Daftar guru/staf yang dapat dipilih sebagai penerima
-        $hosts = Host::where('status', 'available')
+        // Daftar guru/staf (akun guru) yang dapat dipilih sebagai penerima
+        $hosts = Host::with(['department', 'user'])
+            ->where('status', 'available')
             ->orderBy('name')
             ->get();
 

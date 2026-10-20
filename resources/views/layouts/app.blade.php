@@ -40,6 +40,9 @@
                     <a href="{{ route('ticket.lookup') }}" class="px-4 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('ticket.lookup') ? 'bg-orange-600 text-white shadow' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                         <i class="fa-solid fa-ticket mr-1.5 text-xs"></i> Cek Tiket / Status
                     </a>
+                    <a href="{{ session('guest_ticket_code') ? route('guest.profile', session('guest_ticket_code')) : route('ticket.lookup') }}" class="px-4 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('guest.profile') ? 'bg-orange-600 text-white shadow' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                        <i class="fa-solid fa-id-card mr-1.5 text-xs"></i> Profil Tamu
+                    </a>
                 </nav>
 
                 <!-- Admin Action -->

@@ -29,7 +29,7 @@
                         <th class="py-3.5 px-4">Nama Lengkap & NIP</th>
                         <th class="py-3.5 px-4">Jabatan / Role</th>
                         <th class="py-3.5 px-4">Departemen</th>
-                        <th class="py-3.5 px-4">Kontak (WA & Email)</th>
+                        <th class="py-3.5 px-4">Akun Guru & Kontak</th>
                         <th class="py-3.5 px-4 text-center">Status Kehadiran</th>
                         <th class="py-3.5 px-4 text-right">Aksi</th>
                     </tr>
@@ -53,8 +53,11 @@
                             </td>
 
                             <td class="py-3.5 px-4">
-                                <div><i class="fa-solid fa-phone text-slate-400 mr-1"></i> {{ $host->phone ?: '-' }}</div>
-                                <div class="text-[11px] text-slate-400"><i class="fa-solid fa-envelope text-slate-400 mr-1"></i> {{ $host->email ?: '-' }}</div>
+                                <div class="font-mono text-xs text-orange-600 font-semibold flex items-center gap-1">
+                                    <i class="fa-solid fa-user-check text-[11px]"></i>
+                                    <span>{{ $host->user?->email ?? ($host->email ?: '-') }}</span>
+                                </div>
+                                <div class="text-[11px] text-slate-400 mt-0.5"><i class="fa-solid fa-phone text-slate-400 mr-1"></i> {{ $host->phone ?: '-' }}</div>
                             </td>
 
                             <td class="py-3.5 px-4 text-center">

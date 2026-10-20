@@ -16,13 +16,23 @@ class GuestRegistrationController extends Controller
             ->orderBy('name')
             ->get();
 
-        $hosts = Host::with('department')
+        $hosts = Host::with(['department', 'user'])
+            ->whereHas('user', function ($q) {
+                $q->where('role', 'teacher');
+            })
             ->orderBy('name')
             ->get();
+
+        if ($hosts->isEmpty()) {
+            $hosts = Host::with(['department', 'user'])
+                ->orderBy('name')
+                ->get();
+        }
 
         $hostList = $hosts->map(fn ($h) => [
             'id' => $h->id,
             'name' => $h->name,
+            'email' => $h->user?->email ?? $h->email ?? '',
             'department_id' => $h->department_id,
             'department_name' => $h->department?->name ?? 'Staf / Divisi',
         ]);
@@ -39,6 +49,7 @@ class GuestRegistrationController extends Controller
     {
         return response()->json(
             $department->hosts()
+                ->with('user')
                 ->orderBy('name')
                 ->get()
         );

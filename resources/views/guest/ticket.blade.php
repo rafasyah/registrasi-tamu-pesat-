@@ -21,7 +21,11 @@
                 <p class="text-xs text-slate-300">Tunjukkan bukti registrasi ini ke petugas resepsionis/keamanan SMK PESAT.</p>
             </div>
             
-            <div class="flex items-center space-x-2">
+            <div class="flex flex-wrap items-center justify-end gap-2">
+                <a href="{{ route('guest.profile', $visit->ticket_code) }}" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold shadow-md flex items-center space-x-2 transition-all">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span>Profil &amp; Riwayat</span>
+                </a>
                 <button onclick="window.print()" class="px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-bold shadow-md flex items-center space-x-2 transition-all">
                     <i class="fa-solid fa-print"></i>
                     <span>Cetak Pass</span>

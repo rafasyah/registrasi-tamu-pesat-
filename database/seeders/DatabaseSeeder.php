@@ -68,6 +68,7 @@ class DatabaseSeeder extends Seeder
             ['dept' => 'PROG', 'nip' => '199009182018', 'name' => 'Budi Santoso, S.Kom', 'position' => 'Kaprog PPLG / RPL', 'email' => 'budi.rpl@pesat.sch.id', 'phone' => '081822334455', 'status' => 'available'],
             ['dept' => 'PROG', 'nip' => '199212012020', 'name' => 'Eka Putri, S.Ds', 'position' => 'Kaprog Desain Komunikasi Visual (DKV)', 'email' => 'eka.dkv@pesat.sch.id', 'phone' => '081933445566', 'status' => 'away'],
             ['dept' => 'IT', 'nip' => '199107142019', 'name' => 'Rizky Pratama, M.Kom', 'position' => 'Koordinator IT & Network Admin', 'email' => 'it@pesat.sch.id', 'phone' => '081122334455', 'status' => 'available'],
+            ['dept' => 'PROG', 'nip' => '198901012015', 'name' => 'Guru Contoh PESAT', 'position' => 'Guru Pengajar PESAT', 'email' => 'guru@pesat.sch.id', 'phone' => '081234567000', 'status' => 'available'],
         ];
 
         $hosts = [];
@@ -86,11 +87,18 @@ class DatabaseSeeder extends Seeder
             );
             $hosts[] = $host;
 
-            // Link first host to teacher account as example
-            if (count($hosts) === 1) {
-                $host->user_id = $teacherUser->id;
-                $host->save();
-            }
+            // Create and link teacher user account for every host
+            $teacherAccount = User::updateOrCreate(
+                ['email' => $h['email']],
+                [
+                    'name' => $h['name'],
+                    'password' => Hash::make('password'),
+                    'role' => 'teacher',
+                ]
+            );
+
+            $host->user_id = $teacherAccount->id;
+            $host->save();
         }
 
         // Demo Visits

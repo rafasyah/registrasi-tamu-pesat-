@@ -13,6 +13,8 @@ class TicketPassController extends Controller
             ->where('ticket_code', $code)
             ->firstOrFail();
 
+        session(['guest_ticket_code' => $visit->ticket_code]);
+
         return view('guest.ticket', compact('visit'));
     }
 

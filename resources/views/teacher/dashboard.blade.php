@@ -62,6 +62,7 @@
 
     </div>
 
+    @unless(request()->routeIs('teacher.schedules.index'))
     <!-- Schedule List -->
     <div class="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-hidden">
 
@@ -159,6 +160,7 @@
         @endif
 
     </div>
+    @endunless
 
     <!-- Validasi Ajuan Jadwal Kunjungan Orang Tua / Tamu -->
     <div class="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-hidden">

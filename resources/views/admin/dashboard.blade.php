@@ -300,7 +300,7 @@
 
             <div>
                 <label class="block text-xs font-semibold text-slate-700 mb-2">
-                    Guru/Staf yang Menerima Tamu
+                    Akun Guru yang Menerima Tamu <span class="text-rose-500">*</span>
                 </label>
 
                 <select
@@ -308,11 +308,11 @@
                     required
                     class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-sm"
                 >
-                    <option value="">-- Pilih penerima tamu --</option>
+                    <option value="">-- Pilih akun guru penerima tamu --</option>
 
                     @foreach($hosts as $host)
                         <option value="{{ $host->id }}">
-                            {{ $host->name }} - {{ $host->position }}
+                            {{ $host->name }} ({{ $host->user?->email ?? $host->email }}) - {{ $host->position }}
                         </option>
                     @endforeach
                 </select>

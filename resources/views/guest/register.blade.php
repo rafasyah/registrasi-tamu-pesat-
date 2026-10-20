@@ -178,26 +178,26 @@
                                 @error('department_id') <p class="text-xs text-rose-500 mt-1.5 flex items-center gap-1"><i class="fa-solid fa-circle-exclamation"></i> {{ $message }}</p> @enderror
                             </div>
 
-                            <!-- Guru / Staf yang Dituju (Autocomplete) -->
+                            <!-- Guru yang Dituju (Akun Guru) -->
                             <div>
                                 <label for="host_name_input" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                                    Guru / Staf yang Ditemui
+                                    Guru yang Dituju (Akun Guru)
                                     <span class="text-slate-400 font-normal normal-case">(Opsional)</span>
                                 </label>
                                 <div class="relative">
                                     <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                                        <i class="fa-solid fa-user-tie text-sm"></i>
+                                        <i class="fa-solid fa-chalkboard-user text-sm"></i>
                                     </span>
                                     <input type="text" name="host_name" id="host_name_input" 
                                         class="w-full pl-10 pr-10 py-3 bg-slate-50/70 hover:bg-slate-50 border border-slate-200 focus:border-orange-500 focus:bg-white rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-orange-500/10 transition-all"
-                                        placeholder="Ketik untuk mencari nama guru/staf..." 
+                                        placeholder="Cari nama guru atau email akun guru..." 
                                         autocomplete="off">
                                     <button type="button" id="host_clear_btn" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-rose-500 hidden" title="Hapus pilihan guru">
                                         <i class="fa-solid fa-circle-xmark text-sm"></i>
                                     </button>
                                 </div>
                                 <input type="hidden" name="host_id" id="host_hidden" value="{{ old('host_id') }}">
-                                <p class="text-[11px] text-slate-400 mt-1.5">Bisa dikosongkan jika bertamu umum atau ke loket resepsionis.</p>
+                                <p class="text-[11px] text-slate-400 mt-1.5">Pilih akun guru yang ingin ditemui atau kosongkan jika kunjungan umum.</p>
                                 @error('host_id') <p class="text-xs text-rose-500 mt-1.5 flex items-center gap-1"><i class="fa-solid fa-circle-exclamation"></i> {{ $message }}</p> @enderror
                             </div>
 
@@ -722,13 +722,17 @@
 
                 let filtered = hostData;
                 if (q.length > 0) {
-                    filtered = hostData.filter(h => h.name.toLowerCase().includes(q) || h.department_name.toLowerCase().includes(q));
+                    filtered = hostData.filter(h => 
+                        h.name.toLowerCase().includes(q) || 
+                        (h.email && h.email.toLowerCase().includes(q)) || 
+                        h.department_name.toLowerCase().includes(q)
+                    );
                 }
 
                 if (filtered.length === 0) {
                     const emptyItem = document.createElement('div');
                     emptyItem.className = 'px-4 py-3 text-xs text-slate-400 text-center flex items-center justify-center gap-1.5';
-                    emptyItem.innerHTML = '<i class="fa-solid fa-circle-exclamation text-amber-500"></i> Guru atau staf tidak ditemukan';
+                    emptyItem.innerHTML = '<i class="fa-solid fa-circle-exclamation text-amber-500"></i> Akun guru tidak ditemukan';
                     suggestionsDiv.appendChild(emptyItem);
                     suggestionsDiv.classList.remove('hidden');
                     return;
@@ -746,7 +750,11 @@
                             </div>
                             <div class="min-w-0">
                                 <div class="font-bold text-xs text-slate-800 group-hover:text-orange-600 truncate">${h.name}</div>
-                                <div class="text-[11px] text-slate-400 truncate">${h.department_name}</div>
+                                <div class="text-[11px] text-slate-500 truncate flex items-center gap-1.5 mt-0.5">
+                                    <span class="text-orange-600 font-mono text-[10px] bg-orange-50 px-1.5 py-0.5 rounded border border-orange-200/50">${h.email || 'Akun Guru'}</span>
+                                    <span>&bull;</span>
+                                    <span class="text-slate-400">${h.department_name}</span>
+                                </div>
                             </div>
                         </div>
                         ${isDeptMatch ? '<span class="text-[10px] font-semibold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full shrink-0">Sesuai Divisi</span>' : ''}

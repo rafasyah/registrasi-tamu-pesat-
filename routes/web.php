@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminDepartmentController;
 use App\Http\Controllers\AdminHostController;
 use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GuestProfileController;
 use App\Http\Controllers\GuestRegistrationController;
 use App\Http\Controllers\TeacherScheduleController;
 use App\Http\Controllers\TicketPassController;
@@ -21,6 +22,9 @@ Route::get('/tiket/{code}', [TicketPassController::class, 'show'])->name('ticket
 Route::get('/cek-tiket', [TicketPassController::class, 'lookup'])->name('ticket.lookup');
 Route::post('/cek-tiket', [TicketPassController::class, 'search'])->name('ticket.search');
 Route::match(['get', 'post'], '/tiket/{code}/checkout', [TicketPassController::class, 'checkout'])->name('guest.checkout');
+
+// Profil & Riwayat Tiket Tamu
+Route::get('/profil/{code}', [GuestProfileController::class, 'show'])->name('guest.profile');
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
